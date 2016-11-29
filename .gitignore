@@ -2,4 +2,6 @@
 venv
 *.pyc
 *.ipynb
+data
+db.sqlite3
 
