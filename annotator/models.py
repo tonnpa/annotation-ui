@@ -18,6 +18,8 @@ class Drug(models.Model):
 
 class Annotation(models.Model):
     key = models.ForeignKey(Drug)
+    cui = models.CharField(max_length=16, null=True, blank=True)
+    mdr1 = models.CharField(max_length=256, null=True, blank=True)
 
     I_PLUS = 'i+'
     I_MINUS = 'i-'
@@ -44,4 +46,4 @@ class Annotation(models.Model):
     )
 
     def __str__(self):
-        return str(self.key.key) + ' | ' + self.key.name + ' | ' + self.annotation
+        return str(self.key.key) + ' | ' + self.key.name + ' | ' + self.cui + ' | ' + str(self.annotation)
