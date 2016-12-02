@@ -6,7 +6,7 @@ from annotator.models import Annotation, Drug
 def load_drugs():
     drug_df = pd.read_excel('data/drugs.xslx')
 
-    column_to_index = dict([(c, i) for i, c in enumerate(drug_df.columns)])
+    column_to_index = dict([(c, i+1) for i, c in enumerate(drug_df.columns)])
 
     for record in drug_df.itertuples():
         drug = Drug(
@@ -21,5 +21,14 @@ def load_drugs():
 
 
 def load_annotations():
-    annotation_df = pd.read_excel('data/clinical.xlsx')
-    
+    annotation_df = pd.read_excel('data/clinical.xslx')
+
+    column_to_index = dict([(c, i+1) for i, c in enumerate(annotation_df.columns)])
+
+    for record in annotation_df.itertuples():
+        annotation = Annotation(
+            key=Drug.objects.get(key=record[column_to_index['Drug.Key..Unique.ID.']]),
+            cui=record[column_to_index['cui']],
+            mdr1=record[column_to_index['mdr1']],
+        )
+        annotation.save()
