@@ -15,7 +15,19 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from rest_framework.routers import DefaultRouter
+
+from annotator import views
+from annotator import viewsets
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^$', views.index, name='index')
 ]
+
+# Django REST Framework
+router = DefaultRouter()
+router.register(r'drugs', viewsets.DrugViewSet)
+router.register(r'annotations', viewsets.AnnotationViewSet)
+
+urlpatterns += router.urls
