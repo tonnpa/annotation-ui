@@ -1,0 +1,21 @@
+body {
+    height: 100%;
+    background-color: #faf2cc;
+}
+
+h1 {
+    color: #122b40;
+}
+
+label {
+    color: #1b6d85;
+}
+
+table {
+    background-color: #f2ffe5;
+}
+
+th {
+    background-color: #122b40;
+    color: #f9f9f9;
+}
