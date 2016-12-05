@@ -4,7 +4,7 @@ from annotator.models import Annotation, Drug
 
 
 def load_drugs():
-    drug_df = pd.read_excel('data/drugs.xslx')
+    drug_df = pd.read_excel('data/drugs.xlsx')
 
     column_to_index = dict([(c, i+1) for i, c in enumerate(drug_df.columns)])
 
@@ -21,7 +21,7 @@ def load_drugs():
 
 
 def load_annotations():
-    annotation_df = pd.read_excel('data/clinical.xslx')
+    annotation_df = pd.read_excel('data/clinical.xlsx')
 
     column_to_index = dict([(c, i+1) for i, c in enumerate(annotation_df.columns)])
 
