@@ -1,6 +1,6 @@
 import pandas as pd
 
-from annotator.models import Annotation, Drug
+from annotator.models import Annotation, Drug, Person
 
 
 def load_drugs():
@@ -8,6 +8,7 @@ def load_drugs():
 
     column_to_index = dict([(c, i+1) for i, c in enumerate(drug_df.columns)])
 
+    annotator = Person.objects.get(last_name='Amelie', first_name='Amazing')
     for record in drug_df.itertuples():
         drug = Drug(
             key=record[column_to_index['Drug Key (Unique ID)']],
@@ -16,8 +17,10 @@ def load_drugs():
             cl_phase_1=record[column_to_index['Key Clinical - Phase I']],
             cl_phase_2=record[column_to_index['Key Clinical - Phase II']],
             cl_phase_3=record[column_to_index['Key Clinical - Phase III']],
+            annotator=annotator,
         )
         drug.save()
+    print("Loaded {} drugs".format(len(drug_df)))
 
 
 def load_annotations():
@@ -32,3 +35,4 @@ def load_annotations():
             mdr1=record[column_to_index['mdr1']],
         )
         annotation.save()
+    print("Loaded {} annotations".format(len(annotation_df)))
