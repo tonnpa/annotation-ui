@@ -15,7 +15,8 @@ def annotate(request, person_id):
     annotator = Person.objects.get(id=person_id)
     drugs = Drug.objects.filter(annotator=person_id)
     if not drugs.exists():
-        return HttpResponse("Good job {}, no more drugs left to be annotated!".format(annotator.first_name))
+        message = "Good job {}, no more drugs left to be annotated!".format(annotator.first_name)
+        return render(request, 'message.html', {'message': message})
 
     context = {
         'drug': drugs.first(),
