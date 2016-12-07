@@ -24,6 +24,9 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.index, name='welcome'),
     url(r'^annotate/(?P<person_id>[0-9]+)/$', views.annotate, name='annotate'),
+
+    url(r'^partials/drugdetail/(?P<drug_id>[0-9]+)/$', views.partial_drug_detail),
+    url(r'^partials/annotations/(?P<drug_id>[0-9]+)/$', views.partial_annotations),
 ]
 
 # Django REST Framework

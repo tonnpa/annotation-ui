@@ -24,3 +24,18 @@ def annotate(request, person_id):
         'options': Annotation.ANNOTATION,
     }
     return render(request, 'index.html', context)
+
+
+def partial_drug_detail(request, drug_id):
+    context = {
+        'drug': Drug.objects.get(key=drug_id),
+    }
+    return render(request, 'partials/drugdetail.html', context)
+
+
+def partial_annotations(request, drug_id):
+    context = {
+        'options': Annotation.ANNOTATION,
+        'annotations': Annotation.objects.filter(key=drug_id)
+    }
+    return render(request, 'partials/annotations.html', context)

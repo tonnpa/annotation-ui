@@ -1,0 +1,30 @@
+<div class="form-group row">
+    <label for="drug_name" class="col-xs-2 col-form-label">Name</label>
+    <div class="col-xs-10">
+        <textarea id="drug_name" class="form-control" rows=3 readonly>{{ drug.name }}</textarea>
+    </div>
+</div>
+<div class="form-group row">
+    <label for="drug_overview" class="col-xs-2 col-form-label">Overview</label>
+    <div class="col-xs-10">
+        <textarea id="drug_overview" class="form-control" rows=4 readonly>{{ drug.overview }}</textarea>
+    </div>
+</div>
+<div class="form-group row">
+    <label for="drug_phase3" class="col-xs-2 col-form-label">Key Clinical Phase III</label>
+    <div class="col-xs-10">
+        <textarea id="drug_phase3" class="form-control" rows=4 readonly>{{ drug.cl_phase_3 }}</textarea>
+    </div>
+</div>
+<div class="form-group row">
+    <label for="drug_phase2" class="col-xs-2 col-form-label">Key Clinical Phase II</label>
+    <div class="col-xs-10">
+        <textarea id="drug_phase2" class="form-control" rows=3 readonly>{{ drug.cl_phase_2 }}</textarea>
+    </div>
+</div>
+<div class="form-group row">
+    <label for="drug_phase1" class="col-xs-2 col-form-label">Key Clinical Phase I</label>
+    <div class="col-xs-10" style="height: 100%">
+        <textarea id="drug_phase1" class="form-control" rows=3 readonly>{{ drug.cl_phase_1 }}</textarea>
+    </div>
+</div>

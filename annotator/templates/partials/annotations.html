@@ -1,0 +1,9 @@
+{% for annotation in annotations %}
+    <tr>
+        <td>{{ annotation.cui }}</td>
+        <td>{{ annotation.mdr1 }}</td>
+        {% for option, name in options %}
+            <td><input type="radio" name="annotation_{{ annotation.id }}" value="{{ option }}"></td>
+        {% endfor %}
+    </tr>
+{% endfor %}

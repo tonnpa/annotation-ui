@@ -19,36 +19,7 @@
     <div class="row" style="height: 100%">
         <div class="col-md-6" style="height: 100%">
             <h1>Drug</h1>
-            <div class="form-group row">
-                <label for="drug_name" class="col-xs-2 col-form-label">Name</label>
-                <div class="col-xs-10">
-                    <textarea id="drug_name" class="form-control" rows=3 readonly>{{ drug.name }}</textarea>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="drug_overview" class="col-xs-2 col-form-label">Overview</label>
-                <div class="col-xs-10">
-                    <textarea id="drug_overview" class="form-control" rows=4 readonly>{{ drug.overview }}</textarea>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="drug_phase3" class="col-xs-2 col-form-label">Key Clinical Phase III</label>
-                <div class="col-xs-10">
-                    <textarea id="drug_phase3" class="form-control" rows=4 readonly>{{ drug.cl_phase_3 }}</textarea>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="drug_phase2" class="col-xs-2 col-form-label">Key Clinical Phase II</label>
-                <div class="col-xs-10">
-                    <textarea id="drug_phase2" class="form-control" rows=3 readonly>{{ drug.cl_phase_2 }}</textarea>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="drug_phase1" class="col-xs-2 col-form-label">Key Clinical Phase I</label>
-                <div class="col-xs-10" style="height: 100%">
-                    <textarea id="drug_phase1" class="form-control" rows=3 readonly>{{ drug.cl_phase_1 }}</textarea>
-                </div>
-            </div>
+            <div id="drugdetail"></div>
         </div>
         <div class="col-md-6" style="height: 100%;">
             <h1 style="text-align: center">Annotation</h1>
@@ -63,18 +34,16 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for annotation in annotations %}
-                    <tr>
-                        <td>{{ annotation.cui }}</td>
-                        <td>{{ annotation.mdr1 }}</td>
-                        {% for option, name in options %}
-                            <td><input type="radio" name="annotation_{{ annotation.id }}" value="{{ option }}"></td>
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
                 </tbody>
             </table>
-            <button type="button" class="btn btn-success" style="width: 100%">Next</button>
+            <div class="row">
+                <div class="col-xs-6">
+                    <button type="button" class="btn btn-success btn-block">Save</button>
+                </div>
+                <div class="col-xs-6">
+                    <button type="button" class="btn btn-success btn-block">Save and Next</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -90,7 +59,14 @@
 
 <script>
     $(document).ready(function () {
+        var drugID = {{ drug.key }};
+        $.get("/partials/drugdetail/" + drugID).done(function (detail) {
+            $("#drugdetail").html(detail);
+        });
 
+        $.get("/partials/annotations/" + drugID).done(function (annotations) {
+            $("tbody").html(annotations);
+        });
     });
 </script>
 
