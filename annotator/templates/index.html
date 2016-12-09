@@ -38,12 +38,28 @@
             </table>
             <div class="row">
                 <div class="col-xs-6">
-                    <button type="button" class="btn btn-success btn-block">Save</button>
+                    <button id="saveBtn" type="button" class="btn btn-success btn-block"
+                            onclick="annotate(this)">
+                        Save
+                    </button>
                 </div>
                 <div class="col-xs-6">
-                    <button type="button" class="btn btn-success btn-block">Save and Next</button>
+                    <button id="saveNextBtn" type="button" class="btn btn-success btn-block"
+                            onclick="annotate(this)">
+                        Save and Next
+                    </button>
                 </div>
             </div>
+            <br>
+            <div class="alert alert-success" id="success-alert" hidden>
+                <button type="button" class="close" data-dismiss="alert">x</button>
+                <strong>Success! </strong> Annotations were saved.
+            </div>
+            <div class="alert alert-danger" id="danger-alert" hidden>
+                <button type="button" class="close" data-dismiss="alert">x</button>
+                <strong>Oops... </strong> Something went wrong.
+            </div>
+            <br>
         </div>
     </div>
 </div>
@@ -57,9 +73,49 @@
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
 
+<script src="{% static 'js/js.cookie.js' %}"></script>
+<script src="{% static 'js/utils.js' %}"></script>
+<script src="{% static 'js/annotation.js' %}"></script>
+
 <script>
     $(document).ready(function () {
+        var csrftoken = Cookies.get('csrftoken');
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
         var drugID = {{ drug.key }};
+        updateDrugDetailsAndAnnotationTable(drugID)
+    });
+
+    function annotate(button) {
+        var annotations = $("input[type=radio]:checked");
+        $.when.apply($, updateAnnotations(annotations))
+            .done(function () {
+                if (button.id == 'saveBtn') {
+                    alertSuccess("slow");
+                } else if (button.id == 'saveNextBtn') {
+                    alertSuccess("fast", function() {
+                        loadNextDrug();
+                    });
+                }
+            })
+            .fail(function () {
+                alertError();
+            });
+    }
+
+    function loadNextDrug() {
+
+    }
+
+    // Loading partial pages
+    //----------------------
+    function updateDrugDetailsAndAnnotationTable(drugID) {
         $.get("/partials/drugdetail/" + drugID).done(function (detail) {
             $("#drugdetail").html(detail);
         });
@@ -67,7 +123,17 @@
         $.get("/partials/annotations/" + drugID).done(function (annotations) {
             $("tbody").html(annotations);
         });
-    });
+    }
+
+    // DOM manipulation
+    //-----------------
+    function alertSuccess(time, callback) {
+        $("#success-alert").fadeTo(time, 500).slideUp(500, callback);
+    }
+
+    function alertError() {
+        $("#danger-alert").fadeTo(2000, 500).slideDown(500);
+    }
 </script>
 
 </body>

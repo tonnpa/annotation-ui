@@ -1,9 +1,11 @@
-from django.http import HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_protect
 
 from .models import Drug, Annotation, Person
 
 
+@csrf_protect
 def index(request):
     context = {
         'annotators': Person.objects.all()
@@ -19,12 +21,20 @@ def annotate(request, person_id):
         return render(request, 'message.html', {'message': message})
 
     context = {
+        'annotator': person_id,
         'drug': drugs.first(),
         'annotations': Annotation.objects.filter(key=drugs.first().key),
         'options': Annotation.ANNOTATION,
     }
     return render(request, 'index.html', context)
 
+
+def get_next_drug(request, person_id):
+    next_drug = Drug.objects.filter(annotator=person_id) \
+        .filter(annotation__annotation__isnull='True').distinct().first()
+    if next_drug is not None:
+        return JsonResponse(next_drug.key)
+    return JsonResponse(None)
 
 def partial_drug_detail(request, drug_id):
     context = {

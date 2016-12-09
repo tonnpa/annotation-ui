@@ -3,7 +3,10 @@
         <td>{{ annotation.cui }}</td>
         <td>{{ annotation.mdr1 }}</td>
         {% for option, name in options %}
-            <td><input type="radio" name="annotation_{{ annotation.id }}" value="{{ option }}"></td>
+            <td><input type="radio" name="{{ annotation.id }}" value="{{ option }}"
+            {% if annotation.annotation == option %}
+                checked
+            {% endif %}></td>
         {% endfor %}
     </tr>
 {% endfor %}
