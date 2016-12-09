@@ -97,9 +97,9 @@
         $.when.apply($, updateAnnotations(annotations))
             .done(function () {
                 if (button.id == 'saveBtn') {
-                    alertSuccess("slow");
+                    alertSuccess();
                 } else if (button.id == 'saveNextBtn') {
-                    alertSuccess("fast", function() {
+                    alertSuccess(function () {
                         loadNextDrug();
                     });
                 }
@@ -110,29 +110,36 @@
     }
 
     function loadNextDrug() {
-
+        $.get("/drugs/next/{{ annotator }}").done(function (drugID) {
+            if (drugID == null) {
+                // TODO
+                // Show congrats message
+            } else {
+                updateDrugDetailsAndAnnotationTable(drugID);
+            }
+        });
     }
 
     // Loading partial pages
     //----------------------
     function updateDrugDetailsAndAnnotationTable(drugID) {
         $.get("/partials/drugdetail/" + drugID).done(function (detail) {
-            $("#drugdetail").html(detail);
+            $("#drugdetail").hide().html(detail).fadeIn("slow");
         });
 
         $.get("/partials/annotations/" + drugID).done(function (annotations) {
-            $("tbody").html(annotations);
+            $("tbody").hide().html(annotations).fadeIn("slow");
         });
     }
 
     // DOM manipulation
     //-----------------
-    function alertSuccess(time, callback) {
-        $("#success-alert").fadeTo(time, 500).slideUp(500, callback);
+    function alertSuccess(callback) {
+        $("#success-alert").fadeTo("slow", 500).slideUp(500, callback);
     }
 
     function alertError() {
-        $("#danger-alert").fadeTo(2000, 500).slideDown(500);
+        $("#danger-alert").fadeTo("slow", 500).slideDown(500);
     }
 </script>
 

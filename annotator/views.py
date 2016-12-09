@@ -33,8 +33,9 @@ def get_next_drug(request, person_id):
     next_drug = Drug.objects.filter(annotator=person_id) \
         .filter(annotation__annotation__isnull='True').distinct().first()
     if next_drug is not None:
-        return JsonResponse(next_drug.key)
-    return JsonResponse(None)
+        return JsonResponse(next_drug.key, safe=False)
+    return JsonResponse(None, safe=False)
+
 
 def partial_drug_detail(request, drug_id):
     context = {
