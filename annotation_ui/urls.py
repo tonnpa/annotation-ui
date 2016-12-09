@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^$', views.index, name='welcome'),
     url(r'^annotate/(?P<person_id>[0-9]+)/$', views.annotate, name='annotate'),
     url(r'^drugs/next/(?P<person_id>[0-9]+)/$', views.get_next_drug),
+    url(r'^export/$', views.export, name='export'),
 
     url(r'^partials/drugdetail/(?P<drug_id>[0-9]+)/$', views.partial_drug_detail),
     url(r'^partials/annotations/(?P<drug_id>[0-9]+)/$', views.partial_annotations),

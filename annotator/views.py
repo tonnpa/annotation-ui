@@ -1,9 +1,11 @@
-from django.http import JsonResponse
+import csv
+from datetime import date
+
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
 
 from .models import Drug, Annotation, Person
-
 
 @csrf_protect
 def index(request):
@@ -27,6 +29,17 @@ def annotate(request, person_id):
         'options': Annotation.ANNOTATION,
     }
     return render(request, 'index.html', context)
+
+
+def export(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="annotations_{}.csv"'.format(date.today())
+    writer = csv.writer(response)
+    writer.writerow(['Drug Key', 'CUI', 'MDR1', 'Annotation'])
+
+    for annotation in Annotation.objects.all():
+        writer.writerow([annotation.key, annotation.cui, annotation.mdr1, annotation.annotation])
+    return response
 
 
 def get_next_drug(request, person_id):
