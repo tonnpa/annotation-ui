@@ -51,5 +51,8 @@ class Annotation(models.Model):
         blank=True,
     )
 
+    class Meta:
+        unique_together = ('key', 'cui')
+
     def __str__(self):
         return str(self.key.key) + ' | ' + self.key.name + ' | ' + self.cui + ' | ' + str(self.annotation)
