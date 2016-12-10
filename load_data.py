@@ -6,10 +6,11 @@ Ani = Person.objects.get(last_name='Nguyen', first_name='Ani')
 Luke = Person.objects.get(last_name='Ward', first_name='Luke')
 Aimee = Person.objects.get(last_name='Deaton', first_name='Aimee')
 
-def load_drugs(annotator):
-    drug_df = pd.read_excel('data/ceased_drugs_human_targets_'+annotator.first_name+'.xlsx')
 
-    column_to_index = dict([(c, i+1) for i, c in enumerate(drug_df.columns)])
+def load_drugs(annotator):
+    drug_df = pd.read_excel('data/ceased_drugs_human_targets_' + annotator.first_name + '.xlsx')
+
+    column_to_index = dict([(c, i + 1) for i, c in enumerate(drug_df.columns)])
 
     for record in drug_df.itertuples():
         drug = Drug(
@@ -26,15 +27,19 @@ def load_drugs(annotator):
 
 
 def load_annotations(annotator):
-    annotation_df = pd.read_excel('data/all_clinical_human_target_'+annotator.first_name+'.xlsx')
+    annotation_df = pd.read_excel('data/all_clinical_human_target_' + annotator.first_name + '.xlsx')
 
-    column_to_index = dict([(c, i+1) for i, c in enumerate(annotation_df.columns)])
+    column_to_index = dict([(c, i + 1) for i, c in enumerate(annotation_df.columns)])
 
     for record in annotation_df.itertuples():
+        mdr = record[column_to_index['mdr1']]
+        if mdr == '<none>':
+            mdr = record[column_to_index['mdr2']]
+
         annotation = Annotation(
             key=Drug.objects.get(key=record[column_to_index['Drug.Key..Unique.ID.']]),
             cui=record[column_to_index['cui']],
-            mdr1=record[column_to_index['mdr1']],
+            mdr1=mdr,
         )
         annotation.save()
     print("Loaded {} annotations".format(len(annotation_df)))
