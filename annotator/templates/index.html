@@ -83,13 +83,21 @@
                 <button type="button" class="close" data-dismiss="alert">x</button>
                 <strong>Success! </strong> Annotations were saved.
             </div>
-            <div class="alert alert-danger" id="danger-alert" hidden>
+            <div class="alert alert-success" id="create-alert" hidden>
                 <button type="button" class="close" data-dismiss="alert">x</button>
-                <strong>Oops... </strong> Something went wrong.
+                <strong>Success! </strong> New annotations were created.
             </div>
             <div class="alert alert-success" id="congrats-alert" hidden>
                 <button type="button" class="close" data-dismiss="alert">x</button>
                 <strong>Congratulations! </strong> You've annotated all the drugs!
+            </div>
+            <div class="alert alert-danger" id="input-alert" hidden>
+                <button type="button" class="close" data-dismiss="alert">x</button>
+                <strong>Error. </strong> Please fill out the required fields.
+            </div>
+            <div class="alert alert-danger" id="danger-alert" hidden>
+                <button type="button" class="close" data-dismiss="alert">x</button>
+                <strong>Oops... </strong> Something went wrong.
             </div>
         </div>
     </div>
@@ -109,6 +117,9 @@
 <script src="{% static 'js/annotation.js' %}"></script>
 
 <script>
+
+    var annotatedDrug = {{ drug.key }};
+
     $(document).ready(function () {
         var csrftoken = Cookies.get('csrftoken');
         $.ajaxSetup({
@@ -118,19 +129,33 @@
                 }
             }
         });
-
-        var drugID = {{ drug.key }};
-        updateDrugDetailsAndAnnotationTable(drugID)
+        updateDrugDetailsAndAnnotationTable(annotatedDrug);
     });
 
     function annotate(button) {
-        var annotations = $("input[type=radio]:checked");
-        $.when.apply($, updateAnnotations(annotations))
+        if (inputValidation() == false) {
+            return;
+        }
+
+        var annotations = $("input[type=radio]:checked").not("[name^=new]");
+        var updateResults = updateAnnotations(annotations);
+
+        var additions = $(".newRow");
+        var createResults = addAnnotations(additions, annotatedDrug);
+
+        var allResults = updateResults.concat(createResults);
+        $.when.apply($, allResults)
             .done(function () {
                 if (button.id == 'saveBtn') {
-                    alertSuccess();
+                    if (createResults.length > 0) {
+                        alertSuccessCreate();
+                    }
+                    alertSuccessUpdate();
                 } else if (button.id == 'saveNextBtn') {
-                    alertSuccess(function () {
+                    if (createResults.length > 0) {
+                        alertSuccessCreate();
+                    }
+                    alertSuccessUpdate(function () {
                         loadNextDrug();
                     });
                 }
@@ -138,6 +163,17 @@
             .fail(function () {
                 alertError();
             });
+    }
+
+    function addAnnotations(records, drugID) {
+        var deferred = [];
+        records.each(function (idx, entry) {
+            var cui = $(entry).find("input[name=cui]").val();
+            var mdr = $(entry).find("input[name=mdr]").val();
+            var mark = $(entry).find("input[type=radio]:checked").val();
+            deferred.push(addAnnotation(drugID, cui, mdr, mark));
+        });
+        return deferred;
     }
 
     function loadNextDrug() {
@@ -150,15 +186,37 @@
         });
     }
 
+    function inputValidation() {
+        var valid = true;
+        $(":required").each(function (idx, entry) {
+            if (entry.value.length === 0) {
+                $(entry).parent().addClass("danger");
+                valid = false;
+            } else {
+                $(entry).parent().removeClass("danger");
+            }
+        });
+        if (!valid) {
+            alertInput();
+        }
+        return valid;
+    }
+
     // Loading partial pages
     //----------------------
     function updateDrugDetailsAndAnnotationTable(drugID) {
-        $.get("/partials/drugdetail/" + drugID).done(function (detail) {
+        var details = $.get("/partials/drugdetail/" + drugID).done(function (detail) {
             $("#drugdetail").hide().html(detail).fadeIn("slow");
         });
 
-        $.get("/partials/annotations/" + drugID).done(function (annotations) {
+        var table = $.get("/partials/annotations/" + drugID).done(function (annotations) {
             $("tbody").hide().html(annotations).fadeIn("slow");
+        });
+
+        $.when(details, table).done(function () {
+            annotatedDrug = drugID;
+        }).fail(function () {
+            alertError();
         });
     }
 
@@ -166,21 +224,31 @@
     //-----------------
     function appendRow() {
         var rowNumber = $(".newRow").length + 1;
-        $.get("/partials/newrow/" + rowNumber).done(function(row) {
+        $.get("/partials/newrow/" + rowNumber).done(function (row) {
             $("tbody").append($(row));
         });
     }
 
-    function alertSuccess(callback) {
-        $("#success-alert").fadeTo("slow", 500).slideUp(500, callback);
+    // Alerting
+    //---------
+    function alertSuccessUpdate(callback) {
+        $("#success-alert").fadeTo("slow", 1).slideUp("slow", callback);
     }
 
-    function alertError() {
-        $("#danger-alert").fadeTo("slow", 500).slideDown(500);
+    function alertSuccessCreate() {
+        $("#create-alert").fadeTo("slow", 1).slideUp("slow");
     }
 
     function alertCongrats() {
-        $("#congrats-alert").fadeTo("slow", 500).slideDown(500);
+        $("#congrats-alert").fadeTo("slow", 1).slideDown("normal");
+    }
+
+    function alertInput() {
+        $("#input-alert").fadeTo("slow", 1).slideUp("slow");
+    }
+
+    function alertError() {
+        $("#danger-alert").fadeTo("slow", 1).slideDown("normal");
     }
 </script>
 
