@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_protect
 
 from .models import Drug, Annotation, Person
 
+
 @csrf_protect
 def index(request):
     context = {
@@ -17,7 +18,8 @@ def index(request):
 
 def annotate(request, person_id):
     annotator = Person.objects.get(id=person_id)
-    drugs = Drug.objects.filter(annotator=person_id)
+    drugs = Drug.objects.filter(annotator=person_id).\
+        filter(annotation__annotation__isnull='True').distinct()
     if not drugs.exists():
         message = "Good job {}, no more drugs left to be annotated!".format(annotator.first_name)
         return render(request, 'message.html', {'message': message})
@@ -63,3 +65,11 @@ def partial_annotations(request, drug_id):
         'annotations': Annotation.objects.filter(key=drug_id)
     }
     return render(request, 'partials/annotations.html', context)
+
+
+def partial_empty_annotation(request, row_number):
+    context = {
+        'row': row_number,
+        'options': Annotation.ANNOTATION,
+    }
+    return render(request, 'partials/emptyannotation.html', context)

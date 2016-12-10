@@ -5,6 +5,7 @@
     <title>Swift Annotator</title>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/png" href="{% static 'icon.png' %}">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -26,12 +27,12 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{% url 'welcome' %}">Swift Annotator</a>
+            <a class="navbar-brand" href="{% url 'welcome' %}"><i class="glyphicon glyphicon-home"></i> Swift Annotator</a>
         </div>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="{% url 'export' %}">Export data</a></li>
+                <li><a href="{% url 'export' %}"><i class="glyphicon glyphicon-download"></i> Export data</a></li>
             </ul>
         </div>
     </div>
@@ -59,13 +60,18 @@
                 </tbody>
             </table>
             <div class="row">
-                <div class="col-xs-6">
+                <div class="col-xs-2">
+                    <button id="addBtn" type="button" class="btn btn-warning glyphicon glyphicon-plus"
+                            onclick="appendRow()">
+                    </button>
+                </div>
+                <div class="col-xs-5">
                     <button id="saveBtn" type="button" class="btn btn-success btn-block"
                             onclick="annotate(this)">
                         Save
                     </button>
                 </div>
-                <div class="col-xs-6">
+                <div class="col-xs-5">
                     <button id="saveNextBtn" type="button" class="btn btn-success btn-block"
                             onclick="annotate(this)">
                         Save and Next
@@ -81,7 +87,10 @@
                 <button type="button" class="close" data-dismiss="alert">x</button>
                 <strong>Oops... </strong> Something went wrong.
             </div>
-            <br>
+            <div class="alert alert-success" id="congrats-alert" hidden>
+                <button type="button" class="close" data-dismiss="alert">x</button>
+                <strong>Congratulations! </strong> You've annotated all the drugs!
+            </div>
         </div>
     </div>
 </div>
@@ -134,8 +143,7 @@
     function loadNextDrug() {
         $.get("/drugs/next/{{ annotator }}").done(function (drugID) {
             if (drugID == null) {
-                // TODO
-                // Show congrats message
+                alertCongrats();
             } else {
                 updateDrugDetailsAndAnnotationTable(drugID);
             }
@@ -156,12 +164,23 @@
 
     // DOM manipulation
     //-----------------
+    function appendRow() {
+        var rowNumber = $(".newRow").length + 1;
+        $.get("/partials/newrow/" + rowNumber).done(function(row) {
+            $("tbody").append($(row));
+        });
+    }
+
     function alertSuccess(callback) {
         $("#success-alert").fadeTo("slow", 500).slideUp(500, callback);
     }
 
     function alertError() {
         $("#danger-alert").fadeTo("slow", 500).slideDown(500);
+    }
+
+    function alertCongrats() {
+        $("#congrats-alert").fadeTo("slow", 500).slideDown(500);
     }
 </script>
 

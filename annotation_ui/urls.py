@@ -29,6 +29,7 @@ urlpatterns = [
 
     url(r'^partials/drugdetail/(?P<drug_id>[0-9]+)/$', views.partial_drug_detail),
     url(r'^partials/annotations/(?P<drug_id>[0-9]+)/$', views.partial_annotations),
+    url(r'^partials/newrow/(?P<row_number>[0-9]+)/$', views.partial_empty_annotation),
 ]
 
 # Django REST Framework
