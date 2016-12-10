@@ -119,7 +119,7 @@
                         if (createResults.length > 0) {
                             alertSuccessCreate();
                         }
-                        alertSuccessUpdate(function () {
+                        alertSuccessUpdate(500, function () {
                             loadNextDrug();
                         });
                     }
@@ -195,12 +195,13 @@
 
         // Alerting
         //---------
-        function alertSuccessUpdate(callback) {
-            $("#success-alert").fadeTo("normal", 1).delay(3000).slideUp("normal", callback);
+        function alertSuccessUpdate(delay, callback) {
+            delay = (typeof delay !== 'undefined') ?  delay : 3000;
+            $("#success-alert").fadeTo("normal", 1).delay(delay).slideUp("normal", callback);
         }
 
-        function alertSuccessCreate() {
-            $("#create-alert").fadeTo("normal", 1).delay(3000).slideUp("normal");
+        function alertSuccessCreate(callback) {
+            $("#create-alert").fadeTo("normal", 1).delay(3000).slideUp("normal", callback);
         }
 
         function alertCongrats() {
