@@ -2,13 +2,15 @@ import pandas as pd
 
 from annotator.models import Annotation, Drug, Person
 
+Ani = Person.objects.get(last_name='Nguyen', first_name='Ani')
+Luke = Person.objects.get(last_name='Ward', first_name='Luke')
+Aimee = Person.objects.get(last_name='Deaton', first_name='Aimee')
 
-def load_drugs():
-    drug_df = pd.read_excel('data/drugs.xlsx')
+def load_drugs(annotator):
+    drug_df = pd.read_excel('data/ceased_drugs_human_targets_'+annotator.first_name+'.xlsx')
 
     column_to_index = dict([(c, i+1) for i, c in enumerate(drug_df.columns)])
 
-    annotator = Person.objects.get(last_name='Amelie', first_name='Amazing')
     for record in drug_df.itertuples():
         drug = Drug(
             key=record[column_to_index['Drug Key (Unique ID)']],
@@ -23,8 +25,8 @@ def load_drugs():
     print("Loaded {} drugs".format(len(drug_df)))
 
 
-def load_annotations():
-    annotation_df = pd.read_excel('data/clinical.xlsx')
+def load_annotations(annotator):
+    annotation_df = pd.read_excel('data/all_clinical_human_target_'+annotator.first_name+'.xlsx')
 
     column_to_index = dict([(c, i+1) for i, c in enumerate(annotation_df.columns)])
 
