@@ -35,12 +35,13 @@ def annotate(request, person_id):
 
 def export(request):
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="annotations_{}.csv"'.format(date.today())
-    writer = csv.writer(response)
-    writer.writerow(['Drug Key', 'CUI', 'MDR1', 'Annotation'])
+    response['Content-Disposition'] = 'attachment; filename="annotations_{}.tsv"'.format(date.today())
+    writer = csv.writer(response, delimiter='\t')
+    writer.writerow(['Drug Key', 'CUI', 'MDR1', 'Annotation', 'Annotator'])
 
     for annotation in Annotation.objects.all():
-        writer.writerow([annotation.key, annotation.cui, annotation.mdr1, annotation.annotation])
+        writer.writerow([annotation.key, annotation.cui, annotation.mdr1,
+                         annotation.annotation, str(annotation.key.annotator)])
     return response
 
 
