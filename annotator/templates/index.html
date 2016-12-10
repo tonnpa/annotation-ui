@@ -232,19 +232,19 @@
     // Alerting
     //---------
     function alertSuccessUpdate(callback) {
-        $("#success-alert").fadeTo("slow", 1).slideUp("slow", callback);
+        $("#success-alert").fadeTo("normal", 1).delay(3000).slideUp("normal", callback);
     }
 
     function alertSuccessCreate() {
-        $("#create-alert").fadeTo("slow", 1).slideUp("slow");
+        $("#create-alert").fadeTo("normal", 1).delay(3000).slideUp("normal");
     }
 
     function alertCongrats() {
-        $("#congrats-alert").fadeTo("slow", 1).slideDown("normal");
+        $("#congrats-alert").fadeTo("normal", 1).slideDown("normal");
     }
 
     function alertInput() {
-        $("#input-alert").fadeTo("slow", 1).slideUp("slow");
+        $("#input-alert").fadeTo("slow", 1).delay(3000).slideUp("normal");
     }
 
     function alertError() {
