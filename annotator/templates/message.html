@@ -1,9 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Swift Annotate</title>
+{% extends 'layout.html' %}
 
+{% block head_extension %}
     <style>
         body {
             height: 100%;
@@ -15,17 +12,18 @@
             color: #122b40;
         }
 
-        div {
+        .message {
             width: 100%;
             position: absolute;
             top: 30%;
             bottom: 50%;
         }
     </style>
-</head>
-<body>
-<div>
-    <h1>{{ message }}</h1>
-</div>
-</body>
-</html>
+{% endblock %}
+
+
+{% block main_panel %}
+    <div class="message">
+        <h1>{{ message }}</h1>
+    </div>
+{% endblock %}
