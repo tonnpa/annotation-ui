@@ -112,16 +112,16 @@
                 .done(function () {
                     if (button.id == 'saveBtn') {
                         if (createResults.length > 0) {
-                            alertSuccessCreate();
+                            alertSuccessCreate(500, function () {
+                                updateAnnotationTable(annotatedDrug);
+                            });
                         }
                         alertSuccessUpdate();
                     } else if (button.id == 'saveNextBtn') {
                         if (createResults.length > 0) {
                             alertSuccessCreate();
                         }
-                        alertSuccessUpdate(500, function () {
-                            loadNextDrug();
-                        });
+                        alertSuccessUpdate(500, loadNextDrug);
                     }
                 })
                 .fail(function () {
@@ -168,14 +168,21 @@
 
         // Loading partial pages
         //----------------------
-        function updateDrugDetailsAndAnnotationTable(drugID) {
-            var details = $.get("/partials/drugdetail/" + drugID).done(function (detail) {
+        function updateDrugDetails(drugID) {
+            return $.get("/partials/drugdetail/" + drugID).done(function (detail) {
                 $("#drugdetail").hide().html(detail).fadeIn("slow");
             });
+        }
 
-            var table = $.get("/partials/annotations/" + drugID).done(function (annotations) {
+        function updateAnnotationTable(drugID) {
+            return $.get("/partials/annotations/" + drugID).done(function (annotations) {
                 $("tbody").hide().html(annotations).fadeIn("slow");
             });
+        }
+
+        function updateDrugDetailsAndAnnotationTable(drugID) {
+            var details = updateDrugDetails(drugID);
+            var table = updateAnnotationTable(drugID);
 
             $.when(details, table).done(function () {
                 annotatedDrug = drugID;
@@ -196,12 +203,13 @@
         // Alerting
         //---------
         function alertSuccessUpdate(delay, callback) {
-            delay = (typeof delay !== 'undefined') ?  delay : 3000;
+            delay = (typeof delay !== 'undefined') ? delay : 3000;
             $("#success-alert").fadeTo("normal", 1).delay(delay).slideUp("normal", callback);
         }
 
-        function alertSuccessCreate(callback) {
-            $("#create-alert").fadeTo("normal", 1).delay(3000).slideUp("normal", callback);
+        function alertSuccessCreate(delay, callback) {
+            delay = (typeof delay !== 'undefined') ? delay : 3000;
+            $("#create-alert").fadeTo("normal", 1).delay(delay).slideUp("normal", callback);
         }
 
         function alertCongrats() {
