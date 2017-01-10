@@ -15,7 +15,7 @@ def load_drugs(annotator):
     for record in drug_df.itertuples():
         drug = Drug(
             key=record[column_to_index['Drug Key (Unique ID)']],
-            name=record[column_to_index['Drug Name']],
+            name=record[column_to_index['Drug URL']],
             overview=record[column_to_index['Overview']],
             cl_phase_1=record[column_to_index['Key Clinical - Phase I']],
             cl_phase_2=record[column_to_index['Key Clinical - Phase II']],
