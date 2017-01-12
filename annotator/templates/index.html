@@ -103,10 +103,17 @@
         });
 
         function fillEmptyWithOther(button) {
-            /* Write function to:
-            1. check for which annotation entry is still missing a checked radio button
-            2. check the "o" radio button for these empty entries
-            */
+            var done = [];
+            $("input[type=radio]:checked").each(
+                function(i, r) {
+                    done.push(r.name)
+                });
+            $("input[type=radio][value=o]").each(
+                function(i, r) {
+                    if (done.indexOf(r.name) == -1) {
+                        r.checked = true;
+                    }
+                });
         }
 
         function annotate(button) {
