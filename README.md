@@ -31,7 +31,7 @@ sudo /usr/local/bin/anaconda3/envs/annotation_ui/bin/python manage.py runserver 
 python manage.py createsuperuser
 ~~~
 
-Go to http://10.242.7.215:4039/admin/, log in as superuser and add annotators
+Go to http://0.0.0.0:4039/admin/, log in as superuser and add annotators
 
 Load data
 
